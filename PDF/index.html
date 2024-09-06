@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar PDF com Upload</title>
+    <style>
+        /* Estilizando o fundo da página com uma cor neutra */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            color: #222;
+        }
+
+        /* Estilo minimalista para os botões */
+        #generate, #upload {
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px;
+        }
+
+        #generate:hover, #upload:hover {
+            background-color: #555;
+        }
+
+        /* Ajuste para o input de arquivo invisível */
+        #fileInput {
+            display: none;
+        }
+
+        /* Estilo para desabilitar o botão "Gerar PDF" até que um arquivo seja selecionado */
+        #generate:disabled {
+            background-color: #bbb;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerar PDF</h1>
+    <button id="upload">Selecionar Arquivo</button>
+    <input type="file" id="fileInput" accept=".txt,.docx,.pdf">
+    <button id="generate" disabled>Gerar PDF</button>
+
+    <script>
+        let uploadedFile = null;
+
+        // Abrir o seletor de arquivos ao clicar no botão "Selecionar Arquivo"
+        document.getElementById('upload').addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        // Capturar o arquivo enviado e habilitar o botão "Gerar PDF"
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            uploadedFile = event.target.files[0];
+
+            if (uploadedFile) {
+                document.getElementById('generate').disabled = false;
+            }
+        });
+
+        // Gerar o PDF com jsPDF
+        document.getElementById('generate').addEventListener('click', function () {
+            if (!uploadedFile) {
+                alert('Por favor, selecione um arquivo primeiro!');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Inserir o nome do arquivo no PDF
+            doc.text(`Arquivo enviado: ${uploadedFile.name}`, 10, 10);
+
+            doc.save('arquivo_com_upload.pdf');
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
